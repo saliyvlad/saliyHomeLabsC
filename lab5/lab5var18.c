@@ -19,7 +19,7 @@ void printHexadecimal(unsigned int a) {
     // Печатаем результат в обратном порядке
     printf("Шестнадцатеричное представление: ");
     for (int i = index - 1; i >= 0; i--) {
-        putchar(hexResult[i]);
+        putchar(hexResult[i]);//вывод одиночного символа, без перехода на новую строку
     }
     putchar('\n');
 }
