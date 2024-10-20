@@ -4,7 +4,7 @@ void count_bits(unsigned int a, int *zero_count, int *one_count) {
     *zero_count = 0;
     *one_count = 0;
 
-    for (int i = 0; i < sizeof(a) * 8; i++) { // Проходим по всем битам
+    for (int i = 0; i < sizeof(a) * 8; i++) { // Проходим по всем битам (условие i<sizeof(a) проверяет совпадает ли размер i размеру a)
         if (a & (1 << i)) { // Проверка, установлен ли i-й бит
             (*one_count)++;
         } else {
