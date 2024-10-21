@@ -1,9 +1,10 @@
 #include <stdio.h>
 void main(){//Программа вычисляет факториал 
-	int a,b,c=1;
-	scanf("%d %d",&a,&b);
-	for (int n = a; n%a!=0||n%b!=0;n++){
+	long long int b,c=1,a=1;
+	puts("Введите число до 25");
+	scanf("%d",&b);
+	for (long long int n = a; n%a!=0||n%b!=0;n++){
 		c *=n;
 }
-printf("%d\n",c*b);
+printf("%lld\n",c*b);
 }
