@@ -46,3 +46,81 @@ switch(N){
     
 
 }
+
+
+#4
+#include <stdio.h>
+
+#define MAX_SIZE 3 // Максимальный размер матрицы
+
+float determinant2x2(float matrix[2][2]) {
+    return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+}
+
+float determinant3x3(float matrix[3][3]) {
+    return matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1]) -
+           matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0]) +
+           matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+}
+
+int main() {
+    int N;
+    float matrix[MAX_SIZE][MAX_SIZE];
+    float b[MAX_SIZE]; // Вектор свободных членов
+    float x[MAX_SIZE]; // Решения
+
+    // Запрос размера матрицы
+    printf("Введите размер матрицы (2 или 3): ");
+    scanf("%d", &N);
+
+    if (N < 2 || N > 3) {
+        printf("Неверный размер матрицы!\n");
+        return 1;
+    }
+
+    // Ввод коэффициентов матрицы
+    printf("Введите элементы матрицы (%d x %d):\n", N, N);
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++) {
+            scanf("%f", &matrix[i][j]);
+        }
+    }
+
+    // Ввод вектора свободных членов
+    printf("Введите вектор свободных членов:\n");
+    for (int i = 0; i < N; i++) {
+        scanf("%f", &b[i]);
+    }
+
+    // Вычисление определителя матрицы
+    float det = (N == 2) ? determinant2x2(matrix) : determinant3x3(matrix);
+    if (det == 0) {
+        printf("Система не имеет уникального решения.\n");
+        return 1;
+    }
+
+    // Вычисление x1, x2, ..., xN по формуле Крамера
+    for (int i = 0; i < N; i++) {
+        float temp[MAX_SIZE][MAX_SIZE];
+        for (int j = 0; j < N; j++) {
+            for (int k = 0; k < N; k++) {
+                temp[j][k] = matrix[j][k];
+            }
+            temp[j][i] = b[j]; // Замена i-го столбца на b
+        }
+        // Вычисляем определитель матрицы temp
+        float det_temp = (N == 2) ? determinant2x2(temp) : determinant3x3(temp);
+        x[i] = det_temp / det; // Решение по формуле Крамера
+    }
+
+    // Вывод решений
+    printf("Решение системы:\n");
+    for (int i = 0; i < N; i++) {
+        printf("x[%d] = %.2f\n", i + 1, x[i]);
+    }
+
+    return 0;
+}
+
+#5
+
