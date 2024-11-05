@@ -123,4 +123,44 @@ int main() {
 }
 
 #5
+#include <stdio.h>
+
+void solveCramer(int n, float a[n][n], float b[n]) {
+    float D = 0, Dx[n], Dy[n];
+    
+    // Вычисление определителя D
+    for (int i = 0; i < n; i++) {
+        D += (a[0][i] * (a[1][(i + 1) % n] * a[2][(i + 2) % n] - a[1][(i + 2) % n] * a[2][(i + 1) % n]));
+    }
+
+    for (int i = 0; i < n; i++) {
+        // Замена столбца
+        for (int j = 0; j < n; j++) {
+            if (j == i) {
+                Dx[j] = b[0];
+            } else {
+                Dx[j] = a[j][i];
+            }
+        }
+
+        // Вычисление определителя Dx
+        float Dx_val = 0;
+        for (int j = 0; j < n; j++) {
+            Dx_val += (Dx[0] * (Dx[1] * Dx[2] - Dx[1] * Dx[2]));
+        }
+        
+        // Решение
+        float x = Dx_val / D;
+        printf("x%d = %f\n", i + 1, x);
+    }
+}
+
+int main() {
+    int n = 3; // Пример для 3x3 системы
+    float a[3][3] = {{5, -3, 0}, {0, 0, 0}, {0, 0, 0}}; // Пример коэффициентов
+    float b[3] = {7, 0, 0}; // Пример свободных членов
+
+    solveCramer(n, a, b);
+    return 0;
+}
 
