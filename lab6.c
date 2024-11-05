@@ -70,3 +70,63 @@ int main() {
 
     return 0;
 }
+#НА 5
+#include <stdio.h>
+
+int is_prime(int num) {
+    if (num < 2) return 0;
+    for (int i = 2; i * i <= num; i++) {
+        if (num % i == 0) return 0;
+    }
+    return 1;
+}
+
+int is_perfect(int num) {
+    int sum = 0;
+    for (int i = 1; i < num; i++) {
+        if (num % i == 0) sum += i;
+    }
+    return sum == num;
+}
+
+void process_array(int arr[], int size) {
+    int last_prime_index = -1, first_perfect_index = -1;
+
+    for (int i = 0; i < size; i++) {
+        if (is_prime(arr[i])) {
+            last_prime_index = i;
+        }
+        if (first_perfect_index == -1 && is_perfect(arr[i])) {
+            first_perfect_index = i;
+        }
+    }
+
+    if (last_prime_index != -1 && first_perfect_index != -1) {
+        int temp = arr[last_prime_index];
+        arr[last_prime_index] = arr[first_perfect_index];
+        arr[first_perfect_index] = temp;
+    }
+
+    // Удаление четных чисел
+    for (int i = 0; i < size; i++) {
+        if (arr[i] % 2 == 0) {
+            for (int j = i; j < size - 1; j++) {
+                arr[j] = arr[j + 1];
+            }
+            size--;
+            i--; // Проверяем текущую позицию снова
+        }
+    }
+
+    // Вывод массива
+    for (int i = 0; i < size; i++) {
+        printf("%d ", arr[i]);
+    }
+}
+
+int main() {
+    int X[] = {1, 2, 3, 4, 5, 6, 28}; // Пример массива
+    int size = sizeof(X) / sizeof(X[0]);
+    process_array(X, size);
+    return 0;
+}
