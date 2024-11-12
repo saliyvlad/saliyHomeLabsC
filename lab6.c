@@ -205,3 +205,130 @@
 
 
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void fillMatrixRandom(int **matrix, int size);
+void printMatrix(int **matrix, int size);
+int *extractElementsAboveDiagonals(int **matrix, int size, int *count);
+double calculateAverage(int **matrix, int size);
+void sortMainDiagonal(int **matrix, int size);
+
+int main() {
+    int size;
+    printf("Введите размерность матрицы: ");
+    scanf("%d", &size);
+
+    // Динамическое выделение памяти для матрицы
+    int **matrix = (int **)malloc(size * sizeof(int *));
+    for (int i = 0; i < size; i++) {
+        matrix[i] = (int *)malloc(size * sizeof(int));
+    }
+
+    // Инициализация генератора случайных чисел
+    srand(time(0));
+    
+    fillMatrixRandom(matrix, size);
+    printf("Случайно сгенерированная матрица:\n");
+    printMatrix(matrix, size);
+
+    int count = 0;
+    int *elementsAboveDiagonals = extractElementsAboveDiagonals(matrix, size, &count);
+    
+    double average = calculateAverage(matrix, size);
+    printf("Среднее значение элементов матрицы: %.2f\n", average);
+    
+    int lessThanAverageCount = 0;
+    for (int i = 0; i < count; i++) {
+        if (elementsAboveDiagonals[i] < average) {
+            lessThanAverageCount++;
+        }
+    }
+    printf("Количество элементов выше диагоналей меньше среднего: %d\n", lessThanAverageCount);
+
+    sortMainDiagonal(matrix, size);
+    printf("Матрица после сортировки главной диагонали:\n");
+    printMatrix(matrix, size);
+
+    // Освобождение памяти
+    free(elementsAboveDiagonals);
+    for (int i = 0; i < size; i++) {
+        free(matrix[i]);
+    }
+    free(matrix);
+
+    return 0;
+}
+
+void fillMatrixRandom(int **matrix, int size) {
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            matrix[i][j] = rand() % 100; // Генерация случайных чисел от 0 до 99
+        }
+    }
+}
+
+void printMatrix(int **matrix, int size) {
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            printf("%2d ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+int *extractElementsAboveDiagonals(int **matrix, int size, int *count) {
+    int maxSize = size * (size - 1) / 2; // Максимальное количество элементов
+    int *elements = (int *)malloc(maxSize * sizeof(int));
+    *count = 0;
+
+    // Извлечение элементов выше главной и побочной диагоналей
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            if (j > i && j < size - 1 - i) { // Элементы выше главной диагонали
+                elements[(*count)++] = matrix[i][j];
+            }
+        }
+    }
+    return elements;
+}
+
+double calculateAverage(int **matrix, int size) {
+    double sum = 0;
+    int totalElements = size * size;
+
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            sum += matrix[i][j];
+        }
+    }
+    return sum / totalElements;
+}
+
+void sortMainDiagonal(int **matrix, int size) {
+    int *diagonal = (int *)malloc(size * sizeof(int));
+
+    // Извлечение главной диагонали
+    for (int i = 0; i < size; i++) {
+        diagonal[i] = matrix[i][i];
+    }
+
+    // Сортировка главной диагонали (метод пузырька)
+    for (int i = 0; i < size - 1; i++) {
+        for (int j = 0; j < size - 1 - i; j++) {
+            if (diagonal[j] > diagonal[j + 1]) {
+                int temp = diagonal[j];
+                diagonal[j] = diagonal[j + 1];
+                diagonal[j + 1] = temp;
+            }
+        }
+    }
+
+    // Запись отсортированной главной диагонали обратно в матрицу
+    for (int i = 0; i < size; i++) {
+        matrix[i][i] = diagonal[i];
+    }
+
+    free(diagonal);
+}
