@@ -130,3 +130,72 @@ int main() {
     process_array(X, size);
     return 0;
 }
+
+
+
+
+
+#include <stdio.h>
+
+int is_prime(int n) {
+    if (n <= 1) return 0;
+    for (int i = 2; i*i <= n; i++) {
+        if (n % i == 0) return 0;
+    }
+    return 1;
+}
+
+int is_perfect(int n) {
+    if (n <= 1) return 0;
+    int sum = 0;
+    for (int i = 1; i < n; i++) {
+        if (n % i == 0) {
+            sum += i;
+        }
+    }
+    return sum == n;
+}
+
+int main() {
+    int X[] = {6, 28, 4, 5, 9, 15, 21, 12, 3, 10};
+    int size = sizeof(X) / sizeof(X[0]);
+    int last_prime_index = -1;
+    int first_perfect_index = -1;
+
+    // Поиск последнего простого и первого совершенного числа
+    for (int i = 0; i < size; i++) {
+        if (is_prime(X[i])) {
+            last_prime_index = i; // обновляем индекс последнего простого
+        }
+        if (is_perfect(X[i]) && first_perfect_index == -1) {
+            first_perfect_index = i; // сохраняем индекс первого совершенного
+        }
+    }
+
+    // Обмен местами последнего простого и первого совершенного
+    if (last_prime_index != -1 && first_perfect_index != -1) {
+        int temp = X[last_prime_index];
+        X[last_prime_index] = X[first_perfect_index];
+        X[first_perfect_index] = temp;
+    }
+
+    // Удаление четных чисел
+    int new_size = 0;
+    int new_X[size]; // новый массив для хранения нечетных чисел
+
+    for (int i = 0; i < size; i++) {
+        if (X[i] % 2 != 0) {
+            new_X[new_size] = X[i];
+            new_size++;
+        }
+    }
+
+    // Вывод результата
+    printf("Результат: ");
+    for (int i = 0; i < new_size; i++) {
+        printf("%d ", new_X[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
