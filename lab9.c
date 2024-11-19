@@ -71,3 +71,104 @@ int main() {
 
     return 0;
 }
+
+
+
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+void createArrayB(int **A, int n, int **B, int *sizeB) {
+    *sizeB = 0;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (i < j && i + j < n - 1) { // Элементы выше главной и побочной диагоналей
+                B[*sizeB] = A[i][j];
+                (*sizeB)++;
+            }
+        }
+    }
+}
+
+double calculateAverage(int **A, int n) {
+    double sum = 0;
+    int count = n * n;
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            sum += A[i][j];
+        }
+    }
+    return sum / count;
+}
+
+int countLessThanAverage(int *B, int sizeB, double average) {
+    int count = 0;
+    for (int i = 0; i < sizeB; i++) {
+        if (B[i] < average) {
+            count++;
+        }
+    }
+    return count;
+}
+
+void sortMainDiagonal(int **A, int n) {
+    int *diagonal = (int *)malloc(n * sizeof(int));
+    for (int i = 0; i < n; i++) {
+        diagonal[i] = A[i][i];
+    }
+    
+    // Сортировка (например, пузырьком)
+    for (int i = 0; i < n-1; i++) {
+        for (int j = 0; j < n-i-1; j++) {
+            if (diagonal[j] > diagonal[j+1]) {
+                int temp = diagonal[j];
+                diagonal[j] = diagonal[j+1];
+                diagonal[j+1] = temp;
+            }
+        }
+    }
+    
+    // Запись отсортированной диагонали обратно в матрицу
+    for (int i = 0; i < n; i++) {
+        A[i][i] = diagonal[i];
+    }
+    
+    free(diagonal);
+}
+
+int main() {
+    int n = 4; // Размерность матрицы
+    int **A = (int **)malloc(n * sizeof(int *));
+    for (int i = 0; i < n; i++) {
+        A[i] = (int *)malloc(n * sizeof(int));
+    }
+    
+    // Пример заполнения матрицы A
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            A[i][j] = i + j; // Можно использовать любое заполнение
+        }
+    }
+
+    int *B = (int *)malloc(n * n * sizeof(int));
+    int sizeB;
+    createArrayB(A, n, &B, &sizeB);
+    
+    double average = calculateAverage(A, n);
+    int count = countLessThanAverage(B, sizeB, average);
+    
+    sortMainDiagonal(A, n);
+
+    // Освобождение памяти
+    free(B);
+    for (int i = 0; i < n; i++) {
+        free(A[i]);
+    }
+    free(A);
+
+    printf("Количество элементов массива B меньше среднего значения: %d\n", count);
+    
+    return 0;
+}
