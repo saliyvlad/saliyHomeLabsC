@@ -272,3 +272,14 @@ int main() {
     
     return 0;
 }
+
+
+
+
+
+
+
+lab9saliy.c: In function ‘createArrayB’:
+lab9saliy.c:9:27: warning: assignment to ‘int *’ from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+    9 |                 B[*sizeB] = A[i][j];
+      |                           ^
