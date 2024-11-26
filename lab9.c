@@ -401,3 +401,84 @@ int main() {
     
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+void sortColumn(int **matrix, int rows, int col) {
+    for (int i = 0; i < rows - 1; i++) {
+        for (int j = i + 1; j < rows; j++) {
+            if (matrix[j][col] < matrix[i][col]) {
+                // Swap elements
+                int temp = matrix[i][col];
+                matrix[i][col] = matrix[j][col];
+                matrix[j][col] = temp;
+            }
+        }
+    }
+}
+
+int countPositiveInColumn(int **matrix, int rows, int col) {
+    int count = 0;
+    for (int i = 0; i < rows; i++) {
+        if (matrix[i][col] > 0) {
+            count++;
+        }
+    }
+    return count;
+}
+
+int main() {
+    int rows, cols;
+    printf("Введите количество строк и столбцов матрицы: ");
+    scanf("%d %d", &rows, &cols);
+
+    // Динамическое выделение памяти для матрицы
+    int **matrix = (int **)malloc(rows * sizeof(int *));
+    for (int i = 0; i < rows; i++) {
+        matrix[i] = (int *)malloc(cols * sizeof(int));
+    }
+
+    // Ввод элементов матрицы
+    printf("Введите элементы матрицы:\n");
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            scanf("%d", &matrix[i][j]);
+        }
+    }
+
+    int minSwapsCol = -1;
+    int minSwaps = rows * cols; // Максимально возможное количество перестановок
+
+    // Упорядочиваем каждый столбец
+    for (int col = 0; col < cols; col++) {
+        int swaps = 0;
+
+        // Сортируем столбец
+        sortColumn(matrix, rows, col);
+
+        // Считаем количество положительных элементов
+        int positiveCount = countPositiveInColumn(matrix, rows, col);
+
+        // Проверяем количество перестановок (грубая оценка)
+        for (int i = 0; i < rows - 1; i++) {
+            if (matrix[i][col] > matrix[i + 1][col]) {
+                swaps++;
+            }
+        }
+
+        if (swaps < minSwaps) {
+            minSwaps = swaps;
+            minSwapsCol = col
+                
