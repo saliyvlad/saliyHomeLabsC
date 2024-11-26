@@ -452,7 +452,7 @@ void fillMatrixRandomly(int **matrix, int rows, int cols) {
 }
 
 void printMatrix(int **matrix, int rows, int cols) {
-    printf("Исходная матрица:\n");
+    printf("Матрица:\n");
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
             printf("%d ", matrix[i][j]);
@@ -518,3 +518,5 @@ int main() {
 
     return 0;
 }
+
+
