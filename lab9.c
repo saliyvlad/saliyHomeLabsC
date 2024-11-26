@@ -415,12 +415,13 @@ int main() {
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 void sortColumn(int **matrix, int rows, int col) {
     for (int i = 0; i < rows - 1; i++) {
         for (int j = i + 1; j < rows; j++) {
             if (matrix[j][col] < matrix[i][col]) {
-                // Swap elements
+                // Обмен элементов
                 int temp = matrix[i][col];
                 matrix[i][col] = matrix[j][col];
                 matrix[j][col] = temp;
@@ -439,6 +440,25 @@ int countPositiveInColumn(int **matrix, int rows, int col) {
     return count;
 }
 
+void fillMatrixRandomly(int **matrix, int rows, int cols) {
+    srand(time(NULL)); // Инициализация генератора случайных чисел
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            matrix[i][j] = rand() % 101 - 50; // Заполнение случайными числами от -50 до 50
+        }
+    }
+}
+
+void printMatrix(int **matrix, int rows, int cols) {
+    printf("Исходная матрица:\n");
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            printf("%d ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
+
 int main() {
     int rows, cols;
     printf("Введите количество строк и столбцов матрицы: ");
@@ -450,13 +470,11 @@ int main() {
         matrix[i] = (int *)malloc(cols * sizeof(int));
     }
 
-    // Ввод элементов матрицы
-    printf("Введите элементы матрицы:\n");
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            scanf("%d", &matrix[i][j]);
-        }
-    }
+    // Заполнение матрицы случайными числами
+    fillMatrixRandomly(matrix, rows, cols);
+    
+    // Вывод исходной матрицы
+    printMatrix(matrix, rows, cols);
 
     int minSwapsCol = -1;
     int minSwaps = rows * cols; // Максимально возможное количество перестановок
@@ -493,12 +511,7 @@ int main() {
 
     // Вывод измененной матрицы
     printf("Измененная матрица:\n");
-    for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-            printf("%d ", matrix[i][j]);
-        }
-        printf("\n");
-    }
+    printMatrix(matrix, rows, cols);
 
     // Освобождение памяти
     for (int i = 0; i < rows; i++) {
