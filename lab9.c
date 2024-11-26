@@ -480,5 +480,31 @@ int main() {
 
         if (swaps < minSwaps) {
             minSwaps = swaps;
-            minSwapsCol = col
-                
+            minSwapsCol = col;
+        }
+    }
+
+    // Заменяем элементы столбца с минимальным количеством перестановок на нули
+    if (minSwapsCol != -1) {
+        for (int i = 0; i < rows; i++) {
+            matrix[i][minSwapsCol] = 0;
+        }
+    }
+
+    // Вывод измененной матрицы
+    printf("Измененная матрица:\n");
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            printf("%d ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+
+    // Освобождение памяти
+    for (int i = 0; i < rows; i++) {
+        free(matrix[i]);
+    }
+    free(matrix);
+
+    return 0;
+}
