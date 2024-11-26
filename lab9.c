@@ -432,10 +432,14 @@ int main() {
     scanf("%d %d", &rows, &cols);
 
     // Проверка на ввод только 0 или 1
-    do {
+    while (1) {
         printf("Заполнить матрицу случайными числами? (1 - да, 0 - нет): ");
         scanf("%d", &random);
-    } while (random != 0 && random != 1);
+        if (random == 0 || random == 1) {
+            break; // Выход из цикла, если введено корректное значение
+        }
+        printf("Ошибка: введите 0 или 1.\n"); // Сообщение об ошибке
+    }
 
     int **matrix = (int **)malloc(rows * sizeof(int *));
     for (i = 0; i < rows; i++) {
