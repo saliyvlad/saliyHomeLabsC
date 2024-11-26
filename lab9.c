@@ -417,7 +417,8 @@ int main() {
 #include <stdlib.h>
 #include <time.h>
 
-void sortColumn(int **matrix, int rows, int col) {
+void sortColumn(int **matrix, int rows, int col, int *swaps) {
+    // Сортировка столбца с подсчетом перестановок
     for (int i = 0; i < rows - 1; i++) {
         for (int j = i + 1; j < rows; j++) {
             if (matrix[j][col] < matrix[i][col]) {
@@ -425,6 +426,7 @@ void sortColumn(int **matrix, int rows, int col) {
                 int temp = matrix[i][col];
                 matrix[i][col] = matrix[j][col];
                 matrix[j][col] = temp;
+                (*swaps)++;  // Увеличиваем счетчик перестановок
             }
         }
     }
@@ -483,27 +485,22 @@ int main() {
     for (int col = 0; col < cols; col++) {
         int swaps = 0;
 
-        // Сортируем столбец
-        sortColumn(matrix, rows, col);
+        // Сортируем столбец и подсчитываем количество перестановок
+        sortColumn(matrix, rows, col, &swaps);
 
-        // Считаем количество положительных элементов
-        int positiveCount = countPositiveInColumn(matrix, rows, col);
-
-        // Проверяем количество перестановок (грубая оценка)
-        for (int i = 0; i < rows - 1; i++) {
-            if (matrix[i][col] > matrix[i + 1][col]) {
-                swaps++;
-            }
-        }
-
+        // Если текущее количество перестановок меньше минимального, обновляем
         if (swaps < minSwaps) {
             minSwaps = swaps;
             minSwapsCol = col;
         }
     }
 
-    // Заменяем элементы столбца с минимальным количеством перестановок на нули
+    // Подсчет положительных элементов в столбце с минимальным количеством перестановок
     if (minSwapsCol != -1) {
+        int positiveCount = countPositiveInColumn(matrix, rows, minSwapsCol);
+        printf("Количество положительных элементов в столбце %d: %d\n", minSwapsCol + 1, positiveCount);
+
+        // Заменяем элементы этого столбца на нули
         for (int i = 0; i < rows; i++) {
             matrix[i][minSwapsCol] = 0;
         }
