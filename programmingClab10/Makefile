@@ -1,16 +1,16 @@
-CC=gcc                       # Компилятор
-CFLAGS=-Wall -Wextra        # Флаги компиляции
+CC=gcc                       
+CFLAGS=-Wall -Wextra        
 
-all: main                    # Цель по умолчанию
+all: main                    
 
-main: main.o utils.o         # Зависимости для цели main
-	$(CC) -o main main.o utils.o  # Команда для создания исполняемого файла
+main: main.o utils.o         
+	$(CC) -o main main.o utils.o  
 
-main.o: main.c               # Зависимость для main.o
-	$(CC) $(CFLAGS) -c main.c     # Команда для компиляции main.c
+main.o: main.c               
+	$(CC) $(CFLAGS) -c main.c     
 
-utils.o: utils.c             # Зависимость для utils.o
-	$(CC) $(CFLAGS) -c utils.c    # Команда для компиляции utils.c
+utils.o: utils.c             
+	$(CC) $(CFLAGS) -c utils.c    
 
-clean:                       # Цель для очистки
-	rm -f *.o main               # Удаление объектных файлов и исполняемого файла
+clean:                       
+	rm -f *.o main              
