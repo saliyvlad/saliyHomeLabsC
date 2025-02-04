@@ -1,3 +1,5 @@
+Если ваш код вызывает ошибку "Segmentation fault", это может быть связано с несколькими причинами. Ниже приведен обновленный и более безопасный вариант программы, который избегает потенциальных проблем.
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,7 +16,8 @@ struct Student {
 
 struct Student addStudent(const char *name, int math, int phy, int inf) {
     struct Student newStudent;
-    strncpy(newStudent.name, name, 64);
+    strncpy(newStudent.name, name, sizeof(newStudent.name) - 1);
+    newStudent.name[sizeof(newStudent.name) - 1] = '\0'; // Гарантируем, что строка будет нуль-терминирована
     newStudent.math = math;
     newStudent.phy = phy;
     newStudent.inf = inf;
@@ -42,13 +45,14 @@ void insertionSort(struct Student students[], int n) {
     }
 }
 
+const char *names[] = {
+    "Иван", "Мария", "Петр", "Анастасия", "Дмитрий",
+    "Елена", "Сергей", "Татьяна", "Алексей", "Юлия"
+};
+
 int main() {
     struct Student students[N];
-    const char *names[N] = {
-        "Иван", "Мария", "Петр", "Анастасия", "Дмитрий",
-        "Елена", "Сергей", "Татьяна", "Алексей", "Юлия",
-        // Добавить ещё имена для большей случайности
-    };
+    srand((unsigned int)time(NULL)); // Инициализация генератора случайных чисел
 
     // Заполнение массивов случайными данными
     for (int i = 0; i < N; i++) {
@@ -74,3 +78,11 @@ int main() {
 
     return 0;
 }
+
+
+### Основные изменения:
+1. Устранение проблемы с буфером: Использование sizeof(newStudent.name) - 1 при копировании строки, чтобы избежать переполнения.
+2. Установка завершающего нуля: Добавил явное присвоение нулевого символа в конец строки newStudent.name, чтобы гарантировать ее корректное завершение.
+3. Инициализация генератора случайных чисел: Добавлено srand((unsigned int)time(NULL)); для генерации различных случайных чисел при каждом запуске программы.
+
+Попробуйте запустить обновленный код и проверьте, исчезла ли ошибка.
