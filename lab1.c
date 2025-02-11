@@ -86,3 +86,192 @@ int main() {
 3. Инициализация генератора случайных чисел: Добавлено srand((unsigned int)time(NULL)); для генерации различных случайных чисел при каждом запуске программы.
 
 Попробуйте запустить обновленный код и проверьте, исчезла ли ошибка.
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+int n=10;
+int A[10];
+int N=100;
+int B[100];
+
+// // Функция для сортировки выбором (SelectSort)
+void selectionSort(int n, int A[n]) {
+    int C=0;
+    int M=0;
+    for (int i = 0; i < n - 1; i++) {
+        int k = i;
+        for (int j = i + 1; j < n; j++) {
+            C++;
+            if (A[j] < A[k]) { 
+                k = j;
+            }
+        }
+        if(A[i]!=A[k]){ // защита от фиктивности
+            M++;
+            int temp = A[i];
+            A[i] = A[k];
+            A[k] = temp;
+        }
+    } 
+    printf("Число сравнений:%d\n",C);
+    printf("Число перемещений:%d\n",M);
+    printf("Трудоемкость:%d\n",M+C);
+}
+void FillInc(int n, int A[n]){
+    int i=0;
+    while(n!= -1){
+        A[i]=i+1;
+        i+=1;
+	n-=1;
+    }
+}
+
+void FillDec(int n, int A[n]){
+    int i=0;
+    while(n!= -1){
+        A[n]=i;
+        i+=1;
+	n-=1;
+    }
+}
+void FillRand(int n, int A[n]){
+    srand(time(NULL));
+    int i=0;
+    while(n!= -1){
+        A[n]=rand()%100;
+        n-=1;
+    }
+}
+
+int CheckSum(int n, int A[n]){
+    int i=0;
+    while(n!=-1){
+        i+=A[n-1];
+        n-=1;
+    }
+    return i;
+}
+
+int RunNumber(int n, int A[n]){
+    int i=0;
+    n=0;
+    while(n!= 10){
+        if(A[n]>A[n+1]&& n!=10){
+            i+=1;
+        }
+	    if (n == 9 && i == 0) {
+            i+=1;
+        }
+        n+=1;
+    }
+    return i;
+}
+
+int RunNumber100(int n, int A[n]){
+    int i=0;
+    n=0;
+    while(n!= 100){
+        if(A[n]>A[n+1]&& n!=100){
+            i+=1;
+        }
+	    if (n == 99 && i == 0) {
+            i+=1;
+        }
+        n+=1;
+    }
+    return i;
+}
+
+void PrintMas(int n, int A[n]){
+    int i=0;
+    while(i!=10){
+        printf("%d ",A[i]);
+        i+=1;
+    }
+}
+void PrintMas100(int n, int A[n]){
+    int i=0;
+    while(i!=100){
+        printf("%d ",A[i]);
+        i+=1;
+    }
+}
+void RunNumberAv(int n, int A[n]){
+    int i=0,c=0;
+    int sum=0;
+    int B[10];
+    while(n!= 0){
+        if(A[n]<A[n+1]){
+            i+=1;
+        }
+	else{
+            sum +=1;
+        }
+	B[n]=sum;
+        n-=1;
+    }
+    n=10;
+    while(n!= -1){
+        c+=B[n];
+        n-=1;
+    }
+
+    printf("%fсреднее..\n",c/i);
+}
+int main(){ 
+
+    printf("==========================================================================");
+    printf("\nдля случайного\n");
+    FillRand(n, A);
+    PrintMas(n,A);
+    CheckSum(n,A);
+    RunNumber(n,A);
+    selectionSort(n, A);     
+    printf("Количество серий: %d\nКонтрольная сумма: %d\n", RunNumber(n, A), CheckSum(n, A));
+
+    printf("\nдля убывающего\n");
+    FillDec(n,A);
+    PrintMas(n,A);
+    CheckSum(n,A);
+    RunNumber(n,A);
+    selectionSort(n, A);     
+    printf("Количество серий: %d\nКонтрольная сумма: %d\n", RunNumber(n, A), CheckSum(n, A));
+
+    printf("\nдля Возрастающего\n");
+    FillInc(n,A);
+    PrintMas(n,A);
+    CheckSum(n,A);
+    RunNumber(n,A);
+    selectionSort(n, A);     
+    printf("Количество серий: %d\nКонтрольная сумма: %d\n", RunNumber(n, A), CheckSum(n, A));
+
+    printf("==========================================================================");
+
+    printf("\nдля случайного\n");
+    FillRand(N, B);
+    printf("Исходн. Количество серий: %d\nКонтрольная сумма: %d\n", RunNumber100(N, B), CheckSum(N, B));
+    selectionSort(N, B); 
+    printf("\nУлучш. Количество серий: %d\nКонтрольная сумма: %d\n", RunNumber100(N, B), CheckSum(N, B));
+
+    printf("\nдля убывающего\n");
+    FillDec(N, B);
+    printf("Исходн. Количество серий: %d\nКонтрольная сумма: %d\n", RunNumber100(N, B), CheckSum(N, B));
+    selectionSort(N, B);
+    printf("\nУлучш. Количество серий: %d\nКонтрольная сумма: %d\n", RunNumber100(N, B), CheckSum(N, B));
+
+    printf("\nдля Возрастающего\n");
+    FillInc(N,B);
+    printf("Исходн. Количество серий: %d\nКонтрольная сумма: %d\n", RunNumber100(N, B), CheckSum(N, B));
+    selectionSort(N, B); 
+    printf("\nУлучш. Количество серий: %d\nКонтрольная сумма: %d\n", RunNumber100(N, B), CheckSum(N, B));
+
+    printf("==========================================================================");
+
+    printf("N M(т.)+C(т.) Исходный M(ф)+C(ф) Улучшенный М(ф)+С(ф)");
+    printf("%dd")
+
+}
+// ====================================================================================
+
