@@ -2,60 +2,56 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <sys/time.h>
 
-#define N_SMALL 100
-#define N_MEDIUM 1000
-#define N_LARGE 10000
-#define NAME_SIZE 64
-#define MAX_SCORE 100
+#define N 100
 
-// Структура Student
 struct Student {
-    char name[NAME_SIZE];
+    int student_id;
+    char name[64];
     int math;
-    int phy;
-    int inf;
-    int total;
+    int physics;
+    int informatics;
+    float average_score;
 };
 
-// Функция addStudent()
-struct Student addStudent(const char* name, int math, int phy, int inf) {
+// Функция addStudent адаптирована
+struct Student addStudent(int id, const char* name, int math, int phy, int inf) {
     struct Student newStudent;
-    strncpy(newStudent.name, name, NAME_SIZE - 1);
-    newStudent.name[NAME_SIZE - 1] = '\0'; // Гарантируем нулевой символ
+    newStudent.student_id = id;
+    strncpy(newStudent.name, name, sizeof(newStudent.name) - 1);
+    newStudent.name[sizeof(newStudent.name) - 1] = '\0';
     newStudent.math = math;
-    newStudent.phy = phy;
-    newStudent.inf = inf;
-    newStudent.total = math + phy + inf;
+    newStudent.physics = phy;
+    newStudent.informatics = inf;
+    newStudent.average_score = (float)(math + phy + inf) / 3.0f;
     return newStudent;
 }
 
-// Функция printStudentInfo()
+// Функция printStudentInfo адаптирована
 void printStudentInfo(struct Student student) {
+    printf("ID: %d\n", student.student_id);
     printf("Имя: %s\n", student.name);
     printf("Математика: %d\n", student.math);
-    printf("Физика: %d\n", student.phy);
-    printf("Информатика: %d\n", student.inf);
-    printf("Общий балл: %d\n", student.total);
-    printf("------------------------\n");
+    printf("Физика: %d\n", student.physics);
+    printf("Информатика: %d\n", student.informatics);
+    printf("Средний балл: %.2f\n", student.average_score);
+    printf("----------------------\n");
 }
 
-// Вспомогательная функция для обмена элементов
-void swap(struct Student *a, struct Student *b) {
-    struct Student temp = *a;
+// QuickSort адаптирована
+void swap(struct Student* a, struct Student* b) {
+    struct Student t = *a;
     *a = *b;
-    *b = temp;
+    *b = t;
 }
 
-// 8) Реализация QuickSort
-
-// Функция для разбиения массива (partition)
 int partition(struct Student arr[], int low, int high) {
-    int pivot = arr[high].total; // Выбираем последний элемент в качестве опорного
+    float pivot = arr[high].average_score;
     int i = (low - 1);
 
     for (int j = low; j <= high - 1; j++) {
-        if (arr[j].total > pivot) { // Сортировка по убыванию
+        if (arr[j].average_score > pivot) {
             i++;
             swap(&arr[i], &arr[j]);
         }
@@ -64,7 +60,6 @@ int partition(struct Student arr[], int low, int high) {
     return (i + 1);
 }
 
-// Рекурсивная функция QuickSort
 void quickSort(struct Student arr[], int low, int high) {
     if (low < high) {
         int pi = partition(arr, low, high);
@@ -74,89 +69,41 @@ void quickSort(struct Student arr[], int low, int high) {
     }
 }
 
-// 10), 11) Функция для измерения времени сортировки (clock())
-double measureSortingTime(struct Student arr[], int n, void (*sort_func)(struct Student[], int, int)) {
-    clock_t start_time, end_time;
-    double elapsed_time;
-
-    start_time = clock(); // Запускаем таймер
-
-    sort_func(arr, 0, n - 1); // Вызываем функцию сортировки
-
-    end_time = clock(); // Останавливаем таймер
-
-    elapsed_time = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
-    return elapsed_time;
-}
-
-
-// 9) Получение информации о процессоре (убрано)
-//  printProcessorInfo() удалена для упрощения кода.
-
 int main() {
-
-    // Используем динамическое выделение памяти
-    struct Student *students_small = (struct Student*)malloc(N_SMALL * sizeof(struct Student));
-    struct Student *students_medium = (struct Student*)malloc(N_MEDIUM * sizeof(struct Student));
-    struct Student *students_large = (struct Student*)malloc(N_LARGE * sizeof(struct Student));
-
-    if (!students_small || !students_medium || !students_large) {
-        perror("Ошибка выделения памяти");
-        return 1;
-    }
+    struct Student students[N];
 
     srand(time(NULL));
-
-    // Заполнение массивов студентов для разных размеров
-    for (int i = 0; i < N_SMALL; i++) {
-        char name[NAME_SIZE];
-        sprintf(name, "Студент%d", i + 1);
-        int math = rand() % (MAX_SCORE + 1);
-        int phy = rand() % (MAX_SCORE + 1);
-        int inf = rand() % (MAX_SCORE + 1);
-        students_small[i] = addStudent(name, math, phy, inf);
+    for (int i = 0; i < N; i++) {
+        char name[64];
+        sprintf(name, "Student %d", i + 1);
+        students[i] = addStudent(i + 1, name, rand() % 101, rand() % 101, rand() % 101);
     }
 
-    for (int i = 0; i < N_MEDIUM; i++) {
-        char name[NAME_SIZE];
-        sprintf(name, "Студент%d", i + 1);
-        int math = rand() % (MAX_SCORE + 1);
-        int phy = rand() % (MAX_SCORE + 1);
-        int inf = rand() % (MAX_SCORE + 1);
-        students_medium[i] = addStudent(name, math, phy, inf);
+    printf("Студенты до сортировки:\n");
+    for (int i = 0; i < N; i++) {
+        printStudentInfo(students[i]);
     }
 
-    for (int i = 0; i < N_LARGE; i++) {
-        char name[NAME_SIZE];
-        sprintf(name, "Студент%d", i + 1);
-        int math = rand() % (MAX_SCORE + 1);
-        int phy = rand() % (MAX_SCORE + 1);
-        int inf = rand() % (MAX_SCORE + 1);
-        students_large[i] = addStudent(name, math, phy, inf);
+    struct timeval start, end;
+    long seconds, microseconds;
+    double elapsed;
+
+    gettimeofday(&start, NULL);
+    quickSort(students, 0, N - 1);
+    gettimeofday(&end, NULL);
+
+    seconds = (end.tv_sec - start.tv_sec);
+    microseconds = ((end.tv_usec - start.tv_usec));
+    elapsed = seconds + microseconds * 1e-6;
+
+    printf("Время выполнения Quick Sort (N=%d): %.5f секунд\n", N, elapsed);
+    printf("Размер данных (N=%d): %lu байт\n", N, sizeof(students));
+
+    printf("\nСтуденты после сортировки:\n");
+    for (int i = 0; i < N; i++) {
+        printStudentInfo(students[i]);
     }
-
-
-    // 10), 11) Измерение времени и вывод результатов
-
-    // Маленький набор данных
-    double time_small = measureSortingTime(students_small, N_SMALL, quickSort);
-    printf("\nВремя сортировки quickSort для N = %d: %f секунд\n", N_SMALL, time_small);
-
-    // Средний набор данных
-    double time_medium = measureSortingTime(students_medium, N_MEDIUM, quickSort);
-    printf("Время сортировки quickSort для N = %d: %f секунд\n", N_MEDIUM, time_medium);
-
-    // Большой набор данных
-    double time_large = measureSortingTime(students_large, N_LARGE, quickSort);
-    printf("Время сортировки quickSort для N = %d: %f секунд\n", N_LARGE, time_large);
-
-
-    printf("\nРазмер структуры Student: %zu байт\n", sizeof(struct Student));
-
-    // Освобождаем выделенную память
-    free(students_small);
-    free(students_medium);
-    free(students_large);
 
     return 0;
 }
+
