@@ -150,4 +150,3 @@ void countingSort(struct Student arr[], int n) {
         arr[i] = output[i];
     }
 }
-
