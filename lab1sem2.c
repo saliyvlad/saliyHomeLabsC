@@ -120,3 +120,34 @@ void selectionSort(struct Student arr[], int n) {
         arr[i] = temp;
     }
 }
+
+
+
+void countingSort(struct Student arr[], int n) {
+    struct Student output[n]; // Выходной массив
+    int count[MAX_SCORE + 1] = {0}; // Массив для подсчета количества студентов по среднему баллу
+
+    // Подсчет количества студентов для каждого среднего балла
+    for (int i = 0; i < n; i++) {
+        int score = (int)arr[i].average_score;
+        count[score]++;
+    }
+
+    // Изменение count[i] так, чтобы он содержал фактические позиции студентов в выходном массиве
+    for (int i = 1; i <= MAX_SCORE; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Построение выходного массива
+    for (int i = n - 1; i >= 0; i--) {
+        int score = (int)arr[i].average_score;
+        output[count[score] - 1] = arr[i]; // Поместить студента в правильное место
+        count[score]--; // Уменьшаем количество
+    }
+
+    // Копирование отсортированных студентов обратно в оригинальный массив
+    for (int i = 0; i < n; i++) {
+        arr[i] = output[i];
+    }
+}
+
