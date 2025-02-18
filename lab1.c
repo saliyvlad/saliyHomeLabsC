@@ -275,3 +275,144 @@ int main(){
 }
 // ====================================================================================
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+// Структура для хранения результатов
+typedef struct {
+    int comparisons;
+    int moves;
+} SortStats;
+
+// Функция для обмена двух элементов
+void swap(int *a, int *b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Стандартный SelectSort
+SortStats selectionSort(int arr[], int n) {
+    SortStats stats = {0, 0};
+    int i, j, min_idx;
+
+    for (i = 0; i < n - 1; i++) {
+        min_idx = i;
+        for (j = i + 1; j < n; j++) {
+            stats.comparisons++;
+            if (arr[j] < arr[min_idx])
+                min_idx = j;
+        }
+        if (min_idx != i) {
+            swap(&arr[i], &arr[min_idx]);
+            stats.moves++;
+        }
+    }
+    return stats;
+}
+
+// Улучшенный SelectSort (с избежанием фиктивных перестановок)
+SortStats optimizedSelectionSort(int arr[], int n) {
+    SortStats stats = {0, 0};
+    int i, j, min_idx;
+
+    for (i = 0; i < n - 1; i++) {
+        min_idx = i;
+        for (j = i + 1; j < n; j++) {
+            stats.comparisons++;
+            if (arr[j] < arr[min_idx])
+                min_idx = j;
+        }
+        if (min_idx != i) {  // Важная проверка!
+            swap(&arr[i], &arr[min_idx]);
+            stats.moves++;
+        }
+    }
+    return stats;
+}
+
+// Функции для генерации массивов
+void generateAscendingArray(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        arr[i] = i + 1;
+    }
+}
+
+void generateDescendingArray(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        arr[i] = n - i;
+    }
+}
+
+void generateRandomArray(int arr[], int n) {
+    for (int i = 0; i < n; i++) {
+        arr[i] = rand() % 1000; // Случайные числа от 0 до 999
+    }
+}
+
+// Функция для копирования массива (чтобы сортировать разные копии одного и того же массива)
+void copyArray(int source[], int dest[], int n) {
+    for (int i = 0; i < n; i++) {
+        dest[i] = source[i];
+    }
+}
+
+// Функция для вывода таблицы
+void printTable(int n) {
+    printf("------------------------------------------------------------------------------------------------------\n");
+    printf("| N    | M+C Теоретич. | Исходный Mфакт+Cфакт          | Улучшенный Mфакт+Cфакт           |\n");
+    printf("|      |                 | Убыв.        | Случай.      | Возр.        | Убыв.        | Случай.      | Возр.        |\n");
+    printf("------------------------------------------------------------------------------------------------------\n");
+
+    int arr[n];
+    int arr_copy[n]; // Копия для сортировки
+
+    // Теоретическое значение
+    int theoretical = n + (n * (n - 1)) / 2;
+
+    // Генерируем массивы
+    generateDescendingArray(arr, n);
+    copyArray(arr, arr_copy, n);
+    SortStats descending_stats = selectionSort(arr_copy, n);
+
+    generateRandomArray(arr, n);
+    copyArray(arr, arr_copy, n);
+    SortStats random_stats = selectionSort(arr_copy, n);
+
+    generateAscendingArray(arr, n);
+    copyArray(arr, arr_copy, n);
+    SortStats ascending_stats = selectionSort(arr_copy, n);
+
+    generateDescendingArray(arr, n);
+    copyArray(arr, arr_copy, n);
+    SortStats descending_optimized_stats = optimizedSelectionSort(arr_copy, n);
+
+    generateRandomArray(arr, n);
+    copyArray(arr, arr_copy, n);
+    SortStats random_optimized_stats = optimizedSelectionSort(arr_copy, n);
+
+    generateAscendingArray(arr, n);
+    copyArray(arr, arr_copy, n);
+    SortStats ascending_optimized_stats = optimizedSelectionSort(arr_copy, n);
+
+    printf("| %-4d | %-15d | %-12d | %-12d | %-12d | %-12d | %-12d | %-12d |\n",
+           n, theoretical,
+           descending_stats.moves + descending_stats.comparisons,
+           random_stats.moves + random_stats.comparisons,
+           ascending_stats.moves + ascending_stats.comparisons,
+           descending_optimized_stats.moves + descending_optimized_stats.comparisons,
+           random_optimized_stats.moves + random_optimized_stats.comparisons,
+           ascending_optimized_stats.moves + ascending_optimized_stats.comparisons);
+
+    printf("------------------------------------------------------------------------------------------------------\n");
+}
+
+int main() {
+    srand(time(NULL)); // Инициализация генератора случайных чисел
+
+    printTable(10);
+    printTable(100);
+
+    return 0;
+}
