@@ -559,3 +559,67 @@ int main() {
 
 
 
+#include <stdio.h>
+#include <stdlib.h>
+
+// Структура узла списка
+struct Node {
+    int data;
+    struct Node* next;  // Указатель на следующий узел
+};
+
+// Функция добавления узла в конец списка
+void appendNode(struct Node** head, int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        fprintf(stderr, "Ошибка выделения памяти\n");
+        exit(EXIT_FAILURE);
+    }
+    newNode->data = data;
+    newNode->next = NULL;
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    struct Node* lastNode = *head;
+    while (lastNode->next != NULL) {
+        lastNode = lastNode->next;
+    }
+    lastNode->next = newNode;
+}
+
+// Функция вывода списка на экран
+void printList(struct Node* head) {
+    struct Node* temp = head;
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+// Функция создания списка из ввода пользователя
+struct Node* createList() {
+    struct Node* head = NULL;
+    int data;
+    printf("Введите значения, 0 для окончания: ");
+    while (scanf("%d", &data) == 1 && data != 0) {
+        appendNode(&head, data);
+    }
+    return head;
+}
+
+int main() {
+    // Оценка 3: Создание и вывод списка
+    printf("Создание списка:\n");
+    struct Node* head = createList();
+    printf("Список: ");
+    printList(head);
+
+    // TODO: Добавить освобождение памяти всех выделенных узлов!
+    // Это необходимо сделать, чтобы не было утечек памяти.
+
+    return 0;
+}
