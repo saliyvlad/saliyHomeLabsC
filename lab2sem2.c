@@ -367,6 +367,191 @@ int main() {
 
 
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h> // Для toupper
+
+// Структура узла списка
+struct Node {
+    int data;
+    struct Node* next;  // Указатель на следующий узел
+    struct Node* down;  // Указатель на второй список
+
+    Node(int value) : data(value), next(NULL), down(NULL) {}
+};
+
+// Функция добавления узла в конец списка
+void appendNode(struct Node** head, int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        fprintf(stderr, "Ошибка выделения памяти\n");
+        exit(EXIT_FAILURE);
+    }
+
+    newNode->data = data;
+    newNode->next = NULL;
+    newNode->down = NULL;  // Теперь down тоже инициализируется!
+
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+
+    struct Node* lastNode = *head;
+    while (lastNode->next != NULL) {
+        lastNode = lastNode->next;
+    }
+    lastNode->next = newNode;
+}
+
+
+// Функция вывода списка на экран
+void printList(struct Node* head) {
+    struct Node* temp = head;
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+
+// Функция создания списка из ввода пользователя
+struct Node* createList() {
+    struct Node* head = NULL;
+    int data;
+    printf("Введите значения, 0 для окончания: ");
+    while (scanf("%d", &data) == 1 && data != 0) {
+        appendNode(&head, data);
+    }
+    return head;
+}
+
+// Функция для создания второго списка и связывания с первым (Вариант 4)
+void createAndLinkSecondList(struct Node* head) {
+    struct Node* current = head;
+    int count = 1;
+
+    while (current != NULL) {
+        // Создаем узел во втором списке только для четных позиций в первом списке
+        if (count % 2 == 0) {
+            int data;
+            printf("Введите значение для узла, связанного с %d: ", current->data);
+            if (scanf("%d", &data) != 1) {
+                fprintf(stderr, "Ошибка чтения ввода\n");
+                break;  // Прерываем цикл в случае ошибки
+            }
+
+            struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+            if (newNode == NULL) {
+                fprintf(stderr, "Ошибка выделения памяти\n");
+                exit(EXIT_FAILURE);
+            }
+            newNode->data = data;
+            newNode->next = NULL;
+            newNode->down = NULL;  // И down, и next инициализируются NULL
+
+            current->down = newNode; // Связываем текущий узел с новым узлом
+        }
+        current = current->next;
+        count++;
+    }
+}
+
+
+int main() {
+    // Оценка 3: Создание и вывод списка
+    printf("Создание первого списка:\n");
+    struct Node* head = createList();
+    printf("Первый список: ");
+    printList(head);
+
+    //Оценка 4: Создание второго списка и связывание с первым
+    createAndLinkSecondList(head); // Теперь secondHead не нужен в этой функции.
+    printf("Второй список создан и связан с первым.\n");
+
+    printf("Теперь можно перемещаться по списку.  WASD или 2,4,6,8 (A/4 - влево, D/6 - вправо, S/2 - вниз, W/8 - вверх, Q - выход):\n");
+
+    struct Node* current = head;
+    char input;
+
+    while (1) {
+        if (current) {
+             printf("Текущий узел: %d\n", current->data);
+        } else {
+            printf("Текущий узел: NULL\n");
+        }
+
+        printf("Введите направление: ");
+
+        if (scanf(" %c", &input) != 1) {
+            fprintf(stderr, "Ошибка чтения ввода\n");
+            break;
+        }
+        input = toupper(input); // Приводим к верхнему регистру
+
+
+        if (input == 'Q') {
+            break;
+        }
+
+        struct Node* nextNode = NULL; // Временная переменная для следующего узла
+
+        switch (input) {
+            case 'D': // Вправо
+            case '6':
+                nextNode = current ? current->next : NULL; // Если current не NULL, перейти к следующему узлу
+                if (nextNode) {
+                    current = nextNode; // Если есть следующий узел, перемещаемся к нему
+                } else {
+                    printf("Достигнут конец списка. Возврат в начало.\n");
+                    current = head; // Возвращаемся к началу
+                }
+                break;
+            case 'A': // Влево
+            case '4':
+                 printf("Перемещение влево не реализовано. Возврат в начало.\n");
+                 current = head;
+                break;
+
+            case 'S': // Вниз
+            case '2':
+                nextNode = current ? current->down : NULL;
+                if (nextNode) {
+                    current = nextNode;
+                } else {
+                    printf("Нет связанного узла снизу.\n");
+                }
+                break;
+            case 'W': // Вверх
+            case '8':
+                 printf("Перемещение вверх не реализовано. Возврат в начало.\n");
+                 current = head;
+                break;
+
+            default:
+                printf("Неверный ввод.\n");
+        }
+    }
+
+    printf("Конец программы.\n");
+
+     // TODO: Очень важно добавить освобождение памяти всех выделенных узлов!
+    // Это необходимо сделать, чтобы не было утечек памяти.
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
