@@ -10,3 +10,4 @@ void bubble_sort(int arr[], int n) {
     }
 }
 //эта фукнкция реализует сортировку пузырьком
+//ya molodec
